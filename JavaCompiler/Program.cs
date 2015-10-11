@@ -15,12 +15,16 @@ namespace JavaCompiler
             LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
             IdentifiersTable ident;
             TokenTable table = lexicalAnalyzer.analyze("Input1.txt", out ident);
-            //lexicalAnalyzer.printResults();
+            lexicalAnalyzer.printResults("Tokens.txt");
 
             SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(table, ident);
             syntaxAnalyzer.analyze();
-            
-            
+            Console.WriteLine("Lexical analysis complete.");
+
+            SyntaxTree tree = syntaxAnalyzer.getTree();
+            tree.printItselfToTheFile("Tree.txt");
+
+            Console.WriteLine("Syntax analysis complete.");
             Console.ReadLine();
         }
     }

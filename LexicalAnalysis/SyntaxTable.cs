@@ -31,7 +31,7 @@ namespace LexicalAnalysis
                 "println", "else" };
             keywords = t.AsReadOnly();
             t = new List<String>() { "+", "-", "*", "=", ".", "!", "<", 
-                ">", "(", ")", ";", "{", "}", "!=", "()", "[", "]", "\"",};
+                ">", "(", ")", ";", "{", "}", "!=", "()", "[", "]", "[]", "\"", "=="};
             operators = t.AsReadOnly();
             List<Char> tc = new List<Char>() {'a', 'b', 'c', 'd', 'e', 'f',
                 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',

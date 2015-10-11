@@ -151,7 +151,7 @@ namespace LexicalAnalysis
         }*/
 
         /// <summary>
-        /// just for test purposes, prints token table
+        /// Just for test purposes, prints token table to the console.
         /// </summary>
         public void printResults()
         {
@@ -159,34 +159,56 @@ namespace LexicalAnalysis
             int type = 0, value = 0;
             while (token.next(ref type, ref value))
             {
-                switch (type)
-                {
-                    case 1:
-                        {
-                            Console.WriteLine("Operator: " + SyntaxTable.operation(value));
-                            break;
-                        }
-                    case 2:
-                        {
-                            Console.WriteLine("Keyword: " + SyntaxTable.keyword(value));
-                            break;
-                        }
-                    case 3:
-                        {
-                            Console.WriteLine("Identificator: " + table.identifier(value));
-                            break;
-                        }
-                    case 4:
-                        {
-                            Console.WriteLine("Floating point constant: " + table.identifier(value));
-                            break;
-                        }
-                    case 5:
-                        {
-                            Console.WriteLine("Integer constant: " + table.identifier(value));
-                            break;
-                        }
-                }
+                Console.WriteLine(tokenStringBuilder(type, value));
+            }
+        }
+
+        /// <summary>
+        /// Prints token table to the file.
+        /// </summary>
+        /// <param name="path">Path to the file.</param>
+        public void printResults(string path)
+        {
+            StreamWriter writer = new StreamWriter(path);
+            token.initialize();
+            int type = 0, value = 0;
+
+            while (token.next(ref type, ref value))
+            {
+                writer.WriteLine(tokenStringBuilder(type, value));
+            }
+
+            writer.Close();
+        }
+
+        private string tokenStringBuilder(int type, int value)
+        {
+            switch (type)
+            {
+                case 1:
+                    {
+                        return "Operator: " + SyntaxTable.operation(value);
+                    }
+                case 2:
+                    {
+                        return "Keyword: " + SyntaxTable.keyword(value);
+                    }
+                case 3:
+                    {
+                        return "Identificator: " + table.identifier(value);
+                    }
+                case 4:
+                    {
+                        return "Floating point constant: " + table.identifier(value);
+                    }
+                case 5:
+                    {
+                        return "Integer constant: " + table.identifier(value);
+                    }
+                default:
+                    {
+                        return "Something went wrong";
+                    }
             }
         }
 
