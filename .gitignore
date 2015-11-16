@@ -1,0 +1,7 @@
+*/obj/
+*/bin/
+
+!JavaCompiler/bin/
+!JavaCompiler/bin/Debug/
+JavaCompiler/bin/Debug/*
+!JavaCompiler/bin/Debug/*.txt
