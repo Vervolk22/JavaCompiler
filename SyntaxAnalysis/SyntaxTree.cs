@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using PH.DataTree;
+using SyntaxAnalysis.PH.DataTree;
 using System.IO;
 
 namespace SyntaxAnalysis
@@ -12,7 +12,7 @@ namespace SyntaxAnalysis
     {
         const int MAX_DEPTH = 100;
         const int MAX_LENGTH = 1000;
-        private DTreeNode<string> root = new DTreeNode<string>();
+        private DTreeNode<string> root = new DTreeNode<string>("declares:" + "classes");
         private DTreeNode<string> code;
         private StringBuilder[] strings;
         int[] array;
@@ -136,8 +136,8 @@ namespace SyntaxAnalysis
             }
 
             if (array[depth] < offset) array[depth] = offset;
-            if (depth == 0) return;
             strings[depth].Insert(array[depth], node.Value);
+            if (depth == 0) return;
             array[depth] += node.Value.Length + 1;
         }
 

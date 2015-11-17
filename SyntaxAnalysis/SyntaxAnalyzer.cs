@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LexicalAnalysis;
-using PH.DataTree;
+using SyntaxAnalysis.PH.DataTree;
 
 namespace SyntaxAnalysis
 {
@@ -13,6 +13,7 @@ namespace SyntaxAnalysis
         private SyntaxTree tree = new SyntaxTree();
         private TokenTable token;
         private IdentifiersTable ident;
+        private LexicalAnalyzer lAnalyzer;
 
         private int count;
 
@@ -21,10 +22,11 @@ namespace SyntaxAnalysis
         /// </summary>
         /// <param name="token">Token table.</param>
         /// <param name="ident">Identifiers table.</param>
-        public SyntaxAnalyzer(TokenTable token, IdentifiersTable ident)
+        public SyntaxAnalyzer(TokenTable token, IdentifiersTable ident, LexicalAnalyzer lAnalyzer)
         {
             this.token = token;
             this.ident = ident;
+            this.lAnalyzer = lAnalyzer;
             count = this.token.tokensCount();
         }
 
@@ -80,7 +82,7 @@ namespace SyntaxAnalysis
             // adding class occurence in the tree
             DTreeNode<string> node = tree.getRootNode();
             token.token(pos + 1, ref type, ref value);
-            node = node.Nodes.Add(ident.identifier(value));
+            node = node.Nodes.Add(LexemTypeHelper.getTypedValue(3, ident.identifier(value)));
 
             // go to class content handler
             processor_findMethodsInClass(curlyStart, curlyFinish, node);
@@ -95,7 +97,7 @@ namespace SyntaxAnalysis
         private void processor_findMethodsInClass(int start, int finish, DTreeNode<string> parentNode)
         {
             int curlyFinish = 0, curPos = start;
-            DTreeNode<string> curNode = tree.addNode(parentNode, "methods");
+            DTreeNode<string> curNode = tree.addNode(parentNode, LexemTypeHelper.getTypedValue(6, "methods"));
             while ((curPos = findFirstIdentOccurence(curPos)) != -1)
             {
                 findMatchingBraces(curPos + 1, 1, ref curlyFinish);
@@ -113,16 +115,16 @@ namespace SyntaxAnalysis
         /// <param name="parentNode">Tree node "methods" of a wrapping class.</param>
         private void processor_method(int start, int namePos, int finish, DTreeNode<string> parentNode)
         {
-            DTreeNode<string> curNode = tree.addNode(parentNode, valueOf(namePos));
+            DTreeNode<string> curNode = tree.addNode(parentNode, LexemTypeHelper.getTypedValue(3, valueOf(namePos)));
             if (valueOf(namePos) == "main")
             {
                 tree.setEntryPoint(curNode);
             }
             for (int i = start; i < namePos; i++)
             {
-                tree.addNode(curNode, valueOf(i));
+                tree.addNode(curNode, LexemTypeHelper.getTypedValue(2, valueOf(i)));
             }
-            DTreeNode<string> args = tree.addNode(curNode, "args");
+            DTreeNode<string> args = tree.addNode(curNode, LexemTypeHelper.getTypedValue(6, "args"));
             int closeBrace = 0;
             findMatchingBraces(namePos, 2, ref closeBrace);
             processor_args(args, namePos + 1, closeBrace);
@@ -147,10 +149,10 @@ namespace SyntaxAnalysis
             }
             else
             {
-                node = parentNode.Nodes.Add(valueOf(finishPos));
+                node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(3, valueOf(finishPos)));
                 for (int i = startPos; i < finishPos; i++)
                 {
-                    node.Nodes.Add(valueOf(i));
+                    node.Nodes.Add(LexemTypeHelper.getTypedValue(2, valueOf(i)));
                 }
             }
             return node;
@@ -164,7 +166,7 @@ namespace SyntaxAnalysis
         /// <param name="finishPos">Position, were expression ends.</param>
         private DTreeNode<string> processor_expression(int startPos, int assigmentPos, int finishPos, DTreeNode<string> parentNode)
         {
-            DTreeNode<string> node = parentNode.Nodes.Add(valueOf(assigmentPos));
+            DTreeNode<string> node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(1, valueOf(assigmentPos)));
             processor_variable(startPos, assigmentPos - 1, node);
             processor_ariphmetic(assigmentPos + 1, finishPos - 1, node);
             return node;
@@ -178,10 +180,11 @@ namespace SyntaxAnalysis
         /// <param name="parentNode">Tree parent node of an expression.</param>
         private void processor_ariphmetic(int startPos, int finishPos, DTreeNode<string> parentNode)
         {
+            // Search for (...)+(...)       not only +, but + - *
             int pos = findAriphmeticOutsideBraces(startPos, finishPos);
             if (pos != -1)
             {
-                DTreeNode<string> node = parentNode.Nodes.Add(valueOf(pos));
+                DTreeNode<string> node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(1, valueOf(pos)));
                 processor_ariphmetic(startPos, pos - 1, node);
                 processor_ariphmetic(pos + 1, finishPos, node);
                 return;
@@ -201,7 +204,7 @@ namespace SyntaxAnalysis
             token.token(startPos, ref type, ref value);
             if (startPos == finishPos && type > 2)
             {
-                parentNode.Nodes.Add(valueOf(startPos));
+                parentNode.Nodes.Add(lAnalyzer.tokenStringBuilder(type, value));
                 return;
             }
             else
@@ -219,9 +222,12 @@ namespace SyntaxAnalysis
         /// <returns></returns>
         private DTreeNode<string> processor_statement(int startPos, int finishPos, DTreeNode<string> parentNode)
         {
-            DTreeNode<string> node = parentNode.Nodes.Add(valueOf(startPos + 1));
-            node.Nodes.Add(valueOf(startPos));
-            node.Nodes.Add(valueOf(finishPos));
+            DTreeNode<string> node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(1, valueOf(startPos + 1)));
+            int type = 0, value = 0;
+            token.token(startPos, ref type, ref value);
+            node.Nodes.Add(lAnalyzer.tokenStringBuilder(type, value));
+            token.token(finishPos, ref type, ref value);
+            node.Nodes.Add(lAnalyzer.tokenStringBuilder(type, value));
             return node;
         }
 
@@ -236,7 +242,7 @@ namespace SyntaxAnalysis
         {
             int braceStart, braceFinish = 0;
             braceStart = findMatchingBraces(startPos, 2, ref braceFinish);
-            DTreeNode<string> node = parentNode.Nodes.Add(valueOf(startPos));
+            DTreeNode<string> node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(2, valueOf(startPos)));
             processor_statement(braceStart + 1, braceFinish - 1, node);
 
             braceStart = findMatchingBraces(startPos, 1, ref braceFinish);
@@ -253,12 +259,12 @@ namespace SyntaxAnalysis
         /// <returns></returns>
         private DTreeNode<string> processor_system(int startPos, int finishPos, DTreeNode<string> parentNode)
         {
-            parentNode = parentNode.Nodes.Add(valueOf(startPos));
+            parentNode = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(2, valueOf(startPos)));
             int i = startPos + 2;
             DTreeNode<string> node2 = parentNode;
             while (i < finishPos)
             {
-                node2 = node2.Nodes.Add(valueOf(i));
+                node2 = node2.Nodes.Add(LexemTypeHelper.getTypedValue(2, valueOf(i)));
                 i += 2;
             }
             return parentNode;
@@ -334,10 +340,10 @@ namespace SyntaxAnalysis
             DTreeNode<string> node;
             while ((pos = findFirstIdentOccurence(prevPos)) != -1 && pos < braceFinish)
             {
-                node = parentNode.Nodes.Add(valueOf(pos));
+                node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(3, valueOf(pos)));
                 for (int i = prevPos; i < pos; i++)
                 {
-                    node.Nodes.Add(valueOf(i));
+                    node.Nodes.Add(LexemTypeHelper.getTypedValue(2, valueOf(i)));
                 }
                 prevPos = pos + 2;
             }

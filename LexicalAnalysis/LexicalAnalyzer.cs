@@ -181,29 +181,29 @@ namespace LexicalAnalysis
             writer.Close();
         }
 
-        private string tokenStringBuilder(int type, int value)
+        public string tokenStringBuilder(int type, int value)
         {
             switch (type)
             {
                 case 1:
                     {
-                        return "Operator: " + SyntaxTable.operation(value);
+                        return "operator:" + SyntaxTable.operation(value);
                     }
                 case 2:
                     {
-                        return "Keyword: " + SyntaxTable.keyword(value);
+                        return "keyword:" + SyntaxTable.keyword(value);
                     }
                 case 3:
                     {
-                        return "Identificator: " + table.identifier(value);
+                        return "identifier:" + table.identifier(value);
                     }
                 case 4:
                     {
-                        return "Floating point constant: " + table.identifier(value);
+                        return "floatconstant:" + table.identifier(value);
                     }
                 case 5:
                     {
-                        return "Integer constant: " + table.identifier(value);
+                        return "intconstant:" + table.identifier(value);
                     }
                 default:
                     {

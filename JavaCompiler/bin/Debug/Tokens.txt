@@ -1,89 +1,89 @@
-Keyword: class
-Identificator: JavaLearning1Win
-Operator: {
-Keyword: public
-Keyword: static
-Keyword: void
-Identificator: main
-Operator: (
-Keyword: String
-Operator: []
-Identificator: args
-Operator: )
-Operator: {
-Keyword: int
-Identificator: i
-Operator: =
-Integer constant: 5
-Operator: ;
-Keyword: int
-Identificator: i2
-Operator: =
-Integer constant: 9
-Operator: ;
-Keyword: double
-Identificator: f
-Operator: =
-Floating point constant: 61.29
-Operator: ;
-Keyword: int
-Identificator: result
-Operator: =
-Operator: (
-Operator: (
-Identificator: i
-Operator: -
-Identificator: i2
-Operator: )
-Operator: +
-Integer constant: 17
-Operator: )
-Operator: *
-Operator: (
-Integer constant: 3
-Operator: )
-Operator: ;
-Keyword: System
-Operator: .
-Keyword: out
-Operator: .
-Keyword: println
-Operator: (
-Identificator: result
-Operator: )
-Operator: ;
-Identificator: i
-Operator: =
-Integer constant: 0
-Operator: ;
-Keyword: while
-Operator: (
-Identificator: result
-Operator: <
-Identificator: f
-Operator: )
-Operator: {
-Identificator: i
-Operator: =
-Identificator: i
-Operator: +
-Integer constant: 1
-Operator: ;
-Identificator: result
-Operator: =
-Identificator: result
-Operator: +
-Identificator: i
-Operator: ;
-Operator: }
-Keyword: System
-Operator: .
-Keyword: out
-Operator: .
-Keyword: println
-Operator: (
-Identificator: result
-Operator: )
-Operator: ;
-Operator: }
-Operator: }
+keyword:class
+identifier:JavaLearning1Win
+operator:{
+keyword:public
+keyword:static
+keyword:void
+identifier:main
+operator:(
+keyword:String
+operator:[]
+identifier:args
+operator:)
+operator:{
+keyword:int
+identifier:i
+operator:=
+intconstant:5
+operator:;
+keyword:int
+identifier:i2
+operator:=
+intconstant:9
+operator:;
+keyword:double
+identifier:f
+operator:=
+floatconstant:61.29
+operator:;
+keyword:int
+identifier:result
+operator:=
+operator:(
+operator:(
+identifier:i
+operator:-
+identifier:i2
+operator:)
+operator:+
+intconstant:17
+operator:)
+operator:*
+operator:(
+intconstant:3
+operator:)
+operator:;
+keyword:System
+operator:.
+keyword:out
+operator:.
+keyword:println
+operator:(
+identifier:result
+operator:)
+operator:;
+identifier:i
+operator:=
+intconstant:0
+operator:;
+keyword:while
+operator:(
+identifier:result
+operator:<
+identifier:f
+operator:)
+operator:{
+identifier:i
+operator:=
+identifier:i
+operator:+
+intconstant:1
+operator:;
+identifier:result
+operator:=
+identifier:result
+operator:+
+identifier:i
+operator:;
+operator:}
+keyword:System
+operator:.
+keyword:out
+operator:.
+keyword:println
+operator:(
+identifier:result
+operator:)
+operator:;
+operator:}
+operator:}

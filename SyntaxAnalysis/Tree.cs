@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 
-namespace PH.DataTree
+namespace SyntaxAnalysis.PH.DataTree
 {
 
    #region Delegates, EventArgs and Enumerations

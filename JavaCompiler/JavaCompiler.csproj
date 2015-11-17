@@ -48,6 +48,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\JavaToILGenerator\JavaToILGenerator.csproj">
+      <Project>{c329515f-25cf-4676-800d-feff0f1ac8a5}</Project>
+      <Name>JavaToILGenerator</Name>
+    </ProjectReference>
     <ProjectReference Include="..\LexicalAnalysis\LexicalAnalysis.csproj">
       <Project>{ce2c4c54-09a7-47a4-9ae9-3a9c2df764c2}</Project>
       <Name>LexicalAnalysis</Name>

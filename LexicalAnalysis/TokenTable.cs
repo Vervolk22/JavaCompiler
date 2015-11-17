@@ -61,6 +61,11 @@ namespace LexicalAnalysis
             value = Convert.ToInt32(s[1]);
         }
 
+        public string token(int position)
+        {
+            return tokens[position];
+        }
+
         public int tokensCount()
         {
             return tokens.Count;

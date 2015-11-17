@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaCompiler", "JavaCompiler\JavaCompiler.csproj", "{5B8D6D36-14B0-407C-B189-E068086294EC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalysis", "SyntaxAna
 	ProjectSection(ProjectDependencies) = postProject
 		{CE2C4C54-09A7-47A4-9AE9-3A9C2DF764C2} = {CE2C4C54-09A7-47A4-9AE9-3A9C2DF764C2}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaToILGenerator", "JavaToILGenerator\JavaToILGenerator.csproj", "{C329515F-25CF-4676-800D-FEFF0F1AC8A5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3B733379-1A68-4079-AA02-457882F66FB3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3B733379-1A68-4079-AA02-457882F66FB3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B733379-1A68-4079-AA02-457882F66FB3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
