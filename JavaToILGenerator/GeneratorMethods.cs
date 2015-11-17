@@ -38,7 +38,13 @@ namespace JavaToILGenerator
             MethodBuilder mBuilder = tBuilder.DefineMethod(
                     LexemTypeHelper.getParsedValue(node.Value), attr, returnType, 
                     paramTypes);
+            if (LexemTypeHelper.getParsedValue(node.Value) == "main")
+            {
+                ab.SetEntryPoint(mBuilder);
+            }
 
+            ILGenerator ilGenerator = mBuilder.GetILGenerator();
+            new GeneratorCode(node.Nodes[node.Nodes.Count - 1], ilGenerator).generate();
 
         }
 
