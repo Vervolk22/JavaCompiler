@@ -84,6 +84,7 @@ namespace LexicalAnalysis
             }
             if (current != "") processCurrent();
             ident = table;
+            Console.WriteLine("Lexical analysis complete.");
             return token;
         }
 
@@ -185,30 +186,12 @@ namespace LexicalAnalysis
         {
             switch (type)
             {
-                case 1:
-                    {
-                        return "operator:" + SyntaxTable.operation(value);
-                    }
-                case 2:
-                    {
-                        return "keyword:" + SyntaxTable.keyword(value);
-                    }
-                case 3:
-                    {
-                        return "identifier:" + table.identifier(value);
-                    }
-                case 4:
-                    {
-                        return "floatconstant:" + table.identifier(value);
-                    }
-                case 5:
-                    {
-                        return "intconstant:" + table.identifier(value);
-                    }
-                default:
-                    {
-                        return "Something went wrong";
-                    }
+                case 1: return "operator:" + SyntaxTable.operation(value);
+                case 2: return "keyword:" + SyntaxTable.keyword(value);
+                case 3: return "identifier:" + table.identifier(value);
+                case 4: return "floatconstant:" + table.identifier(value);
+                case 5: return "intconstant:" + table.identifier(value);
+                default: return "Something went wrong";
             }
         }
 

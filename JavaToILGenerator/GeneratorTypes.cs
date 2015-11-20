@@ -47,9 +47,12 @@ namespace JavaToILGenerator
         }
 
 
-        protected void generateFields(DTreeNode<string> node, TypeBuilder mBuilder)
+        protected void generateFields(DTreeNode<string> node, TypeBuilder tBuilder)
         {
-
+            foreach (DTreeNode<string> childNode in node.Nodes)
+            {
+                //new GeneratorMethods(ab, childNode, tBuilder).generate();
+            }
         }
     }
 }

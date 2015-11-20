@@ -43,6 +43,7 @@
     <Compile Include="GeneratorCode.cs" />
     <Compile Include="GeneratorMethods.cs" />
     <Compile Include="GeneratorTypes.cs" />
+    <Compile Include="ILHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

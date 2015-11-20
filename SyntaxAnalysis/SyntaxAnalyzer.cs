@@ -50,7 +50,7 @@ namespace SyntaxAnalysis
                     currentPos++;
                 }
             }
-
+            Console.WriteLine("Syntax analysis complete.");
         }
 
         /// <summary>

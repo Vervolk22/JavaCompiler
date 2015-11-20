@@ -35,6 +35,7 @@ namespace JavaToILGenerator
             }
 
             aBuilder.Save(FILE_NAME);
+            Console.WriteLine("Code generation complete.");
         }
     }
 }

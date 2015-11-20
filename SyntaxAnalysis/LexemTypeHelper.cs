@@ -59,12 +59,12 @@ namespace SyntaxAnalysis
         {
             switch (type)
             {
-                case "operator:": return 1;
-                case "keyword:": return 2;
-                case "identifier:": return 3;
+                case "operator": return 1;
+                case "keyword": return 2;
+                case "identifier": return 3;
                 case "floatconstant": return 4;
-                case "intconstant:": return 5;
-                case "declares:": return 6;
+                case "intconstant": return 5;
+                case "declares": return 6;
                 default: return 0;
             }
         }

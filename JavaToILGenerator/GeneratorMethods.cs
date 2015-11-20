@@ -44,14 +44,11 @@ namespace JavaToILGenerator
             }
 
             ILGenerator ilGenerator = mBuilder.GetILGenerator();
-            new GeneratorCode(node.Nodes[node.Nodes.Count - 1], ilGenerator).generate();
-
+            new GeneratorCode(node.Nodes[node.Nodes.Count - 1], ilGenerator).generate(false);
         }
 
         protected Type[] getArguments(DTreeNode<string> node)
         {
-            Console.WriteLine("Arguments:");
-
             Type[] array = new Type[node.Nodes.Count];
             for (int i = 0; i < node.Nodes.Count; i++) 
             {
@@ -75,14 +72,7 @@ namespace JavaToILGenerator
             }
             else
             {
-                switch (LexemTypeHelper.getParsedValue(node.Nodes[num].Value))
-                {
-                    case "void": type = typeof(void); break;
-                    case "int": type = typeof(int); break;
-                    case "double": type = typeof(double); break;
-                    case "String": type = typeof(String); break;
-                    default: type = null; break;
-                }
+                type = ILHelper.getILType(LexemTypeHelper.getParsedValue(node.Nodes[num].Value));
             }
             return type;
         }
