@@ -1,0 +1,6 @@
+class JavaLearning1Win {
+    public static void main(String[] args) {
+        int i = 5;
+        System.out.println(i);
+    }    
+}

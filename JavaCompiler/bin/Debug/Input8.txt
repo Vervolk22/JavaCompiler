@@ -1,0 +1,13 @@
+class JavaLearning1Win {
+    public static void main(String[] args) {
+        int i = 5;
+	if (i != 5) {
+             i = i + 10;
+        }
+        else {
+             i = i - 4;
+        }
+        System.out.println(i);
+    }
+    
+}
