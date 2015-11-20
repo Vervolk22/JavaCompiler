@@ -120,13 +120,29 @@ namespace JavaToILGenerator
 
         protected void handleWhile(DTreeNode<string> node)
         {
+            Label tempAfterLabel = lastAfterLabel;
+            Label afterLabel = ilg.DefineLabel();
+            lastAfterLabel = afterLabel;
+            Label whileLabel = ilg.DefineLabel();
+            Label bodyLabel = ilg.DefineLabel();
+            bool isElse = node.Nodes.Count == 4 ? true : false;
 
+            ilg.MarkLabel(whileLabel);
+            handleComparison(node.Nodes[0], bodyLabel, afterLabel, false);
+            ilg.MarkLabel(bodyLabel);
+            next(node.Nodes[1]);
+            ilg.Emit(OpCodes.Br, whileLabel);
+            ilg.MarkLabel(afterLabel);
+            next(node.Nodes[2]);
+            lastAfterLabel = tempAfterLabel;
         }
 
         protected void handleComparison(DTreeNode<string> node, Label ifLabel, Label elseLabel, bool isElse)
         {
-            getValue(node.Nodes[1]);
             getValue(node.Nodes[0]);
+            getValue(node.Nodes[1]);
+            //ilg.EmitWriteLine(handleIdentifier(node.Nodes[1]));
+            //ilg.EmitWriteLine(handleIdentifier(node.Nodes[0]));
 
             switch (LexemTypeHelper.getParsedValue(node.Value))
             {
@@ -158,13 +174,19 @@ namespace JavaToILGenerator
         protected void handleBigger(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Bgt, ifLabel);
-            if (isElse) ilg.Emit(OpCodes.Ble, elseLabel);
+            if 
+                (isElse) ilg.Emit(OpCodes.Ble, elseLabel);
+            else
+                ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
         protected void handleLess(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Blt, ifLabel);
-            if (isElse) ilg.Emit(OpCodes.Bge, elseLabel);
+            if 
+                (isElse) ilg.Emit(OpCodes.Bge, elseLabel);
+            else
+                ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
         protected void handleSystem(DTreeNode<string> node)
@@ -177,6 +199,9 @@ namespace JavaToILGenerator
             {
                 ilg.EmitWriteLine(handleIdentifier(node));
             }
+            if (LexemTypeHelper.getParsedValue(node.Value) == "System" &&
+                node.Nodes.Count > 1)
+                next(node.Nodes[1]);
         }
 
         protected LocalBuilder handleIdentifier(DTreeNode<string> node)
