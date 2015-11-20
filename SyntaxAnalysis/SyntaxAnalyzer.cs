@@ -251,6 +251,25 @@ namespace SyntaxAnalysis
         }
 
         /// <summary>
+        /// Analyzes if statement.
+        /// </summary>
+        /// <param name="startPos">Start position of a statement.</param>
+        /// <param name="finishPos">End position of a statement.</param>
+        /// <param name="parentNode">Tree parent node of a statement.</param>
+        /// <returns></returns>
+        private DTreeNode<string> processor_if(int startPos, int finishPos, DTreeNode<string> parentNode)
+        {
+            int braceStart, braceFinish = 0;
+            braceStart = findMatchingBraces(startPos, 2, ref braceFinish);
+            DTreeNode<string> node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(2, valueOf(startPos)));
+            processor_statement(braceStart + 1, braceFinish - 1, node);
+
+            braceStart = findMatchingBraces(startPos, 1, ref braceFinish);
+            processor_code(braceStart + 1, braceFinish, node);
+            return node;
+        }
+
+        /// <summary>
         /// Analyzes System namespace command.
         /// </summary>
         /// <param name="startPos">Start position of a command.</param>
@@ -305,6 +324,14 @@ namespace SyntaxAnalysis
                 {
                     findMatchingBraces(currentPos, 1, ref pos2);
                     node = processor_while(currentPos, pos2, node);
+                    currentPos = pos2 + 1;
+                    continue;
+                }
+                // "if" check
+                if (valueOf(currentPos) == "if")
+                {
+                    findMatchingBraces(currentPos, 1, ref pos2);
+                    node = processor_if(currentPos, pos2, node);
                     currentPos = pos2 + 1;
                     continue;
                 }

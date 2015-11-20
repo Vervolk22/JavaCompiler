@@ -17,6 +17,7 @@ namespace JavaToILGenerator
         ILGenerator ilg;
         Dictionary<string, LocalBuilder> locals = new Dictionary<string, LocalBuilder>();
         bool wasError = false;
+        Label lastAfterLabel;
 
         public GeneratorCode(DTreeNode<string> node, ILGenerator ilg)
         {
@@ -38,6 +39,7 @@ namespace JavaToILGenerator
                 //ilg.Emit(OpCodes.Starg);
                 //ilg.Emit(OpCodes.Stloc);
             }
+            
             ilg.EmitWriteLine("TTTT");
             ilg.Emit(OpCodes.Ret);
         }
@@ -90,7 +92,9 @@ namespace JavaToILGenerator
 
         protected void handleIf(DTreeNode<string> node)
         {
+            Label tempAfterLabel = lastAfterLabel;
             Label afterLabel = ilg.DefineLabel();
+            lastAfterLabel = afterLabel;
             Label ifLabel = ilg.DefineLabel();
             Label elseLabel = ilg.DefineLabel();
             bool isElse = node.Nodes.Count == 4 ? true : false;
@@ -106,6 +110,12 @@ namespace JavaToILGenerator
                 ilg.MarkLabel(elseLabel);
                 next(node.Nodes[2]);
             }
+            else
+            {
+                ilg.MarkLabel(afterLabel);
+                next(node.Nodes[2]);
+            }
+            lastAfterLabel = tempAfterLabel;
         }
 
         protected void handleWhile(DTreeNode<string> node)
@@ -118,7 +128,7 @@ namespace JavaToILGenerator
             getValue(node.Nodes[1]);
             getValue(node.Nodes[0]);
 
-            switch (LexemTypeHelper.getParsedValue(node.Nodes[0].Value))
+            switch (LexemTypeHelper.getParsedValue(node.Value))
             {
                 case "==": handleEqual(ifLabel, elseLabel, isElse); break;
                 case "!=": handleNotEqual(ifLabel, elseLabel, isElse); break;
@@ -130,13 +140,19 @@ namespace JavaToILGenerator
         protected void handleEqual(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Beq, ifLabel);
-            if (isElse) ilg.Emit(OpCodes.Bne_Un, elseLabel);
+            if
+                (isElse) ilg.Emit(OpCodes.Bne_Un, elseLabel);
+            else
+                ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
         protected void handleNotEqual(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Bne_Un, ifLabel);
-            if (isElse) ilg.Emit(OpCodes.Beq, elseLabel);
+            if (isElse) 
+                ilg.Emit(OpCodes.Beq, elseLabel);
+            else
+                ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
         protected void handleBigger(Label ifLabel, Label elseLabel, bool isElse)
@@ -204,7 +220,11 @@ namespace JavaToILGenerator
             else
                 ilg.Emit(OpCodes.Ldloc, (LocalBuilder)o);*/
             ilg.Emit(OpCodes.Stloc, handleIdentifier(node.Nodes[0]));
-            next(node.Nodes[2]);
+
+            if (node.Nodes.Count > 2)
+            {
+                next(node.Nodes[2]);
+            }
         }
 
         protected void getValue(DTreeNode<string> node)
