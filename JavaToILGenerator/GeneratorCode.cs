@@ -11,20 +11,34 @@ using System.Reflection.Emit;
 
 namespace JavaToILGenerator
 {
+    /// <summary>
+    /// Processes code of a single method.
+    /// </summary>
     class GeneratorCode
     {
         DTreeNode<string> node;
         ILGenerator ilg;
+        // Dictionary of local variables with it's names.
         Dictionary<string, LocalBuilder> locals = new Dictionary<string, LocalBuilder>();
         bool wasError = false;
+        // Exit label of the last if statement or while loop.
         Label lastAfterLabel;
 
+        /// <summary>
+        /// Constructor of generator.
+        /// </summary>
+        /// <param name="node">Entry node of the method.</param>
+        /// <param name="ilg">ILGenerator, used in the assembly.</param>
         public GeneratorCode(DTreeNode<string> node, ILGenerator ilg)
         {
             this.node = node;
             this.ilg = ilg;
         }
 
+        /// <summary>
+        /// Starts the code generation process for the method.
+        /// </summary>
+        /// <param name="isEntry">Is the method the entry point of assembly.</param>
         public void generate(bool isEntry)
         {
             next(node);
@@ -44,6 +58,10 @@ namespace JavaToILGenerator
             ilg.Emit(OpCodes.Ret);
         }
 
+        /// <summary>
+        /// Processes the next independent command in the code.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the command.</param>
         protected void next(DTreeNode<string> node)
         {
             int type = 0;
@@ -57,6 +75,10 @@ namespace JavaToILGenerator
             }
         }
 
+        /// <summary>
+        /// Handles the operator as the next command.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the operator.</param>
         protected void handeOperator(DTreeNode<string> node)
         {
             switch (LexemTypeHelper.getParsedValue(node.Value))
@@ -73,6 +95,10 @@ namespace JavaToILGenerator
             }
         }
 
+        /// <summary>
+        /// Handles the keyword as the next command.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the keyword.</param>
         protected void handleKeyword(DTreeNode<string> node)
         {
             string name = LexemTypeHelper.getParsedValue(node.Value);
@@ -90,8 +116,13 @@ namespace JavaToILGenerator
             }
         }
 
+        /// <summary>
+        /// Handles if expression.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the if statement.</param>
         protected void handleIf(DTreeNode<string> node)
         {
+            // Prepare needed lables.
             Label tempAfterLabel = lastAfterLabel;
             Label afterLabel = ilg.DefineLabel();
             lastAfterLabel = afterLabel;
@@ -99,17 +130,21 @@ namespace JavaToILGenerator
             Label elseLabel = ilg.DefineLabel();
             bool isElse = node.Nodes.Count == 4 ? true : false;
 
+            // Make statement comparison, write jumps.
             handleComparison(node.Nodes[0], ifLabel, elseLabel, isElse);
+            // Set the label of the main if body.
             if (node.Nodes.Count > 2)
             {
                 ilg.MarkLabel(ifLabel);
                 next(node.Nodes[1]);
             }
+            // Set the label of the else if body.
             if (node.Nodes.Count > 3)
             {
                 ilg.MarkLabel(elseLabel);
                 next(node.Nodes[2]);
             }
+            // Set the exit point of the if statement.
             else
             {
                 ilg.MarkLabel(afterLabel);
@@ -118,8 +153,13 @@ namespace JavaToILGenerator
             lastAfterLabel = tempAfterLabel;
         }
 
+        /// <summary>
+        /// Handles while loop.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the while loop.</param>
         protected void handleWhile(DTreeNode<string> node)
         {
+            // Prepare needed labels.
             Label tempAfterLabel = lastAfterLabel;
             Label afterLabel = ilg.DefineLabel();
             lastAfterLabel = afterLabel;
@@ -127,16 +167,30 @@ namespace JavaToILGenerator
             Label bodyLabel = ilg.DefineLabel();
             bool isElse = node.Nodes.Count == 4 ? true : false;
 
+            // Mark statement label.
             ilg.MarkLabel(whileLabel);
             handleComparison(node.Nodes[0], bodyLabel, afterLabel, false);
+            // Mark loop body label.
             ilg.MarkLabel(bodyLabel);
             next(node.Nodes[1]);
             ilg.Emit(OpCodes.Br, whileLabel);
+            // Mark loop exit label.
             ilg.MarkLabel(afterLabel);
             next(node.Nodes[2]);
             lastAfterLabel = tempAfterLabel;
         }
 
+        /// <summary>
+        /// Gets the values of compare statement into the stack
+        /// and compares them.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of compare operator.</param>
+        /// <param name="ifLabel">Label that will be executed, if statement
+        /// is true.</param>
+        /// <param name="elseLabel">Label that will be executed if statement
+        /// is false.</param>
+        /// <param name="isElse">Only for if statement. Is there the else 
+        /// code branch. Otherwise, shoud be false.</param>
         protected void handleComparison(DTreeNode<string> node, Label ifLabel, Label elseLabel, bool isElse)
         {
             getValue(node.Nodes[0]);
@@ -153,6 +207,15 @@ namespace JavaToILGenerator
             }
         }
 
+        /// <summary>
+        /// Handles equals operator.
+        /// </summary>
+        /// <param name="ifLabel">Label that will be executed, if statement
+        /// is true.</param>
+        /// <param name="elseLabel">Label that will be executed if statement
+        /// is false.</param>
+        /// <param name="isElse">Only for if statement. Is there the else 
+        /// code branch. Otherwise, shoud be false.</param>
         protected void handleEqual(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Beq, ifLabel);
@@ -162,6 +225,15 @@ namespace JavaToILGenerator
                 ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
+        /// <summary>
+        /// Handles not equal operator.
+        /// </summary>
+        /// <param name="ifLabel">Label that will be executed, if statement
+        /// is true.</param>
+        /// <param name="elseLabel">Label that will be executed if statement
+        /// is false.</param>
+        /// <param name="isElse">Only for if statement. Is there the else 
+        /// code branch. Otherwise, shoud be false.</param>
         protected void handleNotEqual(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Bne_Un, ifLabel);
@@ -171,6 +243,15 @@ namespace JavaToILGenerator
                 ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
+        /// <summary>
+        /// Handles bigger operator.
+        /// </summary>
+        /// <param name="ifLabel">Label that will be executed, if statement
+        /// is true.</param>
+        /// <param name="elseLabel">Label that will be executed if statement
+        /// is false.</param>
+        /// <param name="isElse">Only for if statement. Is there the else 
+        /// code branch. Otherwise, shoud be false.</param>
         protected void handleBigger(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Bgt, ifLabel);
@@ -180,6 +261,14 @@ namespace JavaToILGenerator
                 ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
+        /// <summary>
+        /// Handles less operator.
+        /// </summary>
+        /// <param name="ifLabel">Label that will be executed, if statement
+        /// is true.</param>
+        /// <param name="elseLabel"></param>
+        /// <param name="isElse">Only for if statement. Is there the else 
+        /// code branch. Otherwise, shoud be false.</param>
         protected void handleLess(Label ifLabel, Label elseLabel, bool isElse)
         {
             ilg.Emit(OpCodes.Blt, ifLabel);
@@ -189,6 +278,11 @@ namespace JavaToILGenerator
                 ilg.Emit(OpCodes.Br, lastAfterLabel);
         }
 
+        /// <summary>
+        /// Handles System keyword. !!!On any System... calls 
+        /// System.Console.WriteLine(...);
+        /// </summary>
+        /// <param name="node">SyntaxTree node of System keyword.</param>
         protected void handleSystem(DTreeNode<string> node)
         {
             if (node.Nodes.Count > 0)
@@ -204,6 +298,11 @@ namespace JavaToILGenerator
                 next(node.Nodes[1]);
         }
 
+        /// <summary>
+        /// Handles identifier. Get LocalBuilder or creates it.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of identifier.</param>
+        /// <returns>LocalBUilder instance that represents the identifier.</returns>
         protected LocalBuilder handleIdentifier(DTreeNode<string> node)
         {
             int type = 0;
@@ -213,37 +312,23 @@ namespace JavaToILGenerator
             {
                 if (node.Nodes.Count == 0)
                 {
-                    // ERROR!
+                    // ERROR! TODO
                 }
                 lBuilder = ilg.DeclareLocal(ILHelper.getILType(LexemTypeHelper.getParsedValue(node.Nodes[0].Value)));
                 locals.Add(s, lBuilder);
             }
             return lBuilder;
-            /*switch (type)
-            {
-                case 2:
-                    lBuilder = ilg.DeclareLocal(ILHelper.getILType(s));
-                    locals.Add(node.Nodes[0].Value, lBuilder);
-                    return lBuilder;
-                case 3:
-                    locals.TryGetValue(s, out lBuilder);
-                    return lBuilder;
-                default:
-                    return null;
-            }*/
         }
 
+        /// <summary>
+        /// Handles assignment operator.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of operator.</param>
         protected void handleAssignment(DTreeNode<string> node)
         {
             int type = 0;
             string name = LexemTypeHelper.parse(ref type, node.Nodes[0].Value);
             getValue(node.Nodes[1]);
-            /*if (o.GetType() == typeof(Double))
-                ilg.Emit(OpCodes.Ldc_R4, (double)o);
-            else if (o.GetType() == typeof(int))
-                ilg.Emit(OpCodes.Ldc_I4, (int)o);
-            else
-                ilg.Emit(OpCodes.Ldloc, (LocalBuilder)o);*/
             ilg.Emit(OpCodes.Stloc, handleIdentifier(node.Nodes[0]));
 
             if (node.Nodes.Count > 2)
@@ -252,6 +337,10 @@ namespace JavaToILGenerator
             }
         }
 
+        /// <summary>
+        /// Gets value after a single mathematic operation or identifier.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of operation or identifier.</param>
         protected void getValue(DTreeNode<string> node)
         {
             switch (LexemTypeHelper.getParsedType(node.Value)) 
@@ -276,6 +365,10 @@ namespace JavaToILGenerator
             }
         }
 
+        /// <summary>
+        /// Gets int value from node.
+        /// </summary>
+        /// <param name="node">SyntaxTree node.</param>
         protected void getIntValue(DTreeNode<string> node)
         {
             int value;
@@ -283,6 +376,10 @@ namespace JavaToILGenerator
             ilg.Emit(OpCodes.Ldc_I4, value);
         }
 
+        /// <summary>
+        /// Gets double value from node.
+        /// </summary>
+        /// <param name="node">SyntaxTree node.</param>
         protected void getDoubleValue(DTreeNode<string> node)
         {
             double value;
@@ -290,6 +387,10 @@ namespace JavaToILGenerator
             ilg.Emit(OpCodes.Ldc_R4, value);
         }
 
+        /// <summary>
+        /// Gets identifier value.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of identifier.</param>
         protected void getIdentifierValue(DTreeNode<string> node)
         {
             string name = LexemTypeHelper.getParsedValue(node.Value);
@@ -298,16 +399,12 @@ namespace JavaToILGenerator
             {
                 ilg.Emit(OpCodes.Ldloc, lBuilder);
             }
-
-            /*if (!locals.TryGetValue(name, out lBuilder))
-            {
-                lBuilder = ilg.DeclareLocal(ILHelper.getILType(
-                        LexemTypeHelper.getParsedValue(node.Nodes[0].Value)));
-                locals.Add(name, lBuilder);
-            }
-            return lBuilder;*/
         }
 
+        /// <summary>
+        /// Handles the plus operation.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of plus operation.</param>
         protected void handlePlus(DTreeNode<string> node)
         {
             getValue(node.Nodes[0]);
@@ -315,6 +412,10 @@ namespace JavaToILGenerator
             ilg.Emit(OpCodes.Add);
         }
 
+        /// <summary>
+        /// Handles the minus operation.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of minus operation.</param>
         protected void handleMinus(DTreeNode<string> node)
         {
             getValue(node.Nodes[0]);
@@ -322,6 +423,10 @@ namespace JavaToILGenerator
             ilg.Emit(OpCodes.Sub);
         }
 
+        /// <summary>
+        /// Handles the multiply operation.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of multiply operation.</param>
         protected void handleMultiply(DTreeNode<string> node)
         {
             getValue(node.Nodes[0]);

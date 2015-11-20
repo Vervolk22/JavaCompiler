@@ -10,12 +10,21 @@ using System.Reflection.Emit;
 
 namespace JavaToILGenerator
 {
+    /// <summary>
+    /// Processes a signle method.
+    /// </summary>
     class GeneratorMethods
     {
         AssemblyBuilder ab;
         DTreeNode<string> node;
         TypeBuilder tBuilder;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="ab">AssemblyBuilder used in assembly.</param>
+        /// <param name="node">First SyntaxTree node of method.</param>
+        /// <param name="tBuilder">TypeBuilder instance of parent type.</param>
         public GeneratorMethods(AssemblyBuilder ab, DTreeNode<string> node, TypeBuilder tBuilder)
         {
             this.ab = ab;
@@ -23,6 +32,9 @@ namespace JavaToILGenerator
             this.tBuilder = tBuilder;
         }
 
+        /// <summary>
+        /// Launches method generation process.
+        /// </summary>
         public void generate()
         {
             int num = 0;
@@ -47,6 +59,11 @@ namespace JavaToILGenerator
             new GeneratorCode(node.Nodes[node.Nodes.Count - 1], ilGenerator).generate(false);
         }
 
+        /// <summary>
+        /// Gets array of arguments of method.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of first method's argument.</param>
+        /// <returns>Array of arguments.</returns>
         protected Type[] getArguments(DTreeNode<string> node)
         {
             Type[] array = new Type[node.Nodes.Count];
@@ -57,6 +74,13 @@ namespace JavaToILGenerator
             return array;
         }
 
+        /// <summary>
+        /// Gets return type of the method.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the method's name.</param>
+        /// <param name="num">Possible position in SyntaxTree of return type.
+        /// It's because return type can be array and consists of 2 nodes.</param>
+        /// <returns>Return type of the method.</returns>
         protected Type getRetType(DTreeNode<string> node, int num)
         {
             Type type;
@@ -77,6 +101,12 @@ namespace JavaToILGenerator
             return type;
         }
 
+        /// <summary>
+        /// Gets method's attributes.
+        /// </summary>
+        /// <param name="node">SyntaxTree node of the declaration of attributes.</param>
+        /// <param name="endPos">End position of arguments.</param>
+        /// <returns>Int-based MethodAttributes value.</returns>
         protected MethodAttributes getAttributes(DTreeNode<string> node, int endPos)
         {
             MethodAttributes attr = 0;
@@ -92,6 +122,11 @@ namespace JavaToILGenerator
             return attr;
         }
 
+        /// <summary>
+        /// Gets one of the possible variable types.
+        /// </summary>
+        /// <param name="node">SyntexTree node of variable name.</param>
+        /// <returns></returns>
         protected Type getArgType(DTreeNode<string> node)
         {
             Type type;
