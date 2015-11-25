@@ -418,9 +418,18 @@ namespace JavaToILGenerator
         /// <param name="node">SyntaxTree node of minus operation.</param>
         protected void handleMinus(DTreeNode<string> node)
         {
-            getValue(node.Nodes[0]);
-            getValue(node.Nodes[1]);
-            ilg.Emit(OpCodes.Sub);
+            if (node.Nodes.Count == 1)
+            {
+                getValue(node.Nodes[0]);
+                ilg.Emit(OpCodes.Ldc_I4, (int)-1);
+                ilg.Emit(OpCodes.Mul);
+            }
+            else
+            {
+                getValue(node.Nodes[0]);
+                getValue(node.Nodes[1]);
+                ilg.Emit(OpCodes.Sub);
+            }
         }
 
         /// <summary>

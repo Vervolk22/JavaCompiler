@@ -180,6 +180,16 @@ namespace SyntaxAnalysis
         /// <param name="parentNode">Tree parent node of an expression.</param>
         private void processor_ariphmetic(int startPos, int finishPos, DTreeNode<string> parentNode)
         {
+            // Check for minus
+            int type = 0, value = 0;
+            token.token(startPos, ref type, ref value);
+            if (value == 1)
+            {
+                DTreeNode<string> node = parentNode.Nodes.Add(LexemTypeHelper.getTypedValue(1, valueOf(startPos)));
+                if (finishPos > startPos) processor_ariphmetic(startPos + 1, finishPos, node);
+                return;
+            }
+
             // Search for (...)+(...)       not only +, but + - *
             int pos = findAriphmeticOutsideBraces(startPos, finishPos);
             if (pos != -1)
@@ -199,7 +209,6 @@ namespace SyntaxAnalysis
                 return;
             }
 
-            int type = 0, value = 0;
             if (startPos + 2 == finishPos)
             {
                 token.token(startPos + 1, ref type, ref value);

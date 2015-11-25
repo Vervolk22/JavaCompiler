@@ -22,6 +22,7 @@ namespace SemanticAnalysis
         public void analyze()
         {
             analyzeNode(tree.getRootNode());
+            Console.WriteLine("Semantic analysis complete.");
         }
 
         protected void analyzeNode(DTreeNode<string> parentNode)
