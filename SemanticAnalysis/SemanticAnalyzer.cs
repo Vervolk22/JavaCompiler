@@ -87,7 +87,7 @@ namespace SemanticAnalysis
             switch (type)
             {
                 case 1:
-                    if (s == "=" || s == "+")
+                    if (s == "=" || s == "+" || s == "*" || (s == "-" && parentNode.Nodes.Count != 1))
                         return checkAssignment(parentNode);
                     else 
                         return getChildType(parentNode.Nodes[0]);

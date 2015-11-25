@@ -14,10 +14,12 @@ operator:{
 keyword:int
 identifier:i
 operator:=
-operator:-
 intconstant:3
 operator:*
 intconstant:4
+operator:;
+keyword:int
+identifier:i
 operator:;
 keyword:System
 operator:.
