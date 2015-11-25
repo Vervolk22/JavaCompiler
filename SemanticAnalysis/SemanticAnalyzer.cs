@@ -8,23 +8,38 @@ using SyntaxAnalysis.PH.DataTree;
 
 namespace SemanticAnalysis
 {
+    /// <summary>
+    /// Processes syntax tree to find some semantic errors: expressions type
+    /// mismatch, and duplicate identifiers.
+    /// </summary>
     public class SemanticAnalyzer
     {
         protected SyntaxTree tree;
         protected Dictionary<string, string> identifiers;
 
+        /// <summary>
+        /// Class constructor.
+        /// </summary>
+        /// <param name="tree">Syntax tree to analyze.</param>
         public SemanticAnalyzer(SyntaxTree tree)
         {
             this.tree = tree;
             identifiers = new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// Starts analyze process.
+        /// </summary>
         public void analyze()
         {
             analyzeNode(tree.getRootNode());
             Console.WriteLine("Semantic analysis complete.");
         }
 
+        /// <summary>
+        /// Analyzes a single syntaxTree node to decide what to do next.
+        /// </summary>
+        /// <param name="parentNode">Current syntaxTree node to precess.</param>
         protected void analyzeNode(DTreeNode<string> parentNode)
         {
             int type = 0;
@@ -49,6 +64,10 @@ namespace SemanticAnalysis
             }
         }
 
+        /// <summary>
+        /// Checks, if identifier is already declared.
+        /// </summary>
+        /// <param name="parentNode">Current syntaxTree node to process.</param>
         protected void checkDeclaring(DTreeNode<string> parentNode)
         {
             if (parentNode.Nodes.Count > 0)
@@ -61,6 +80,10 @@ namespace SemanticAnalysis
             }
         }
 
+        /// <summary>
+        /// Duplicate identifier error occured.
+        /// </summary>
+        /// <param name="node">SyntaxTree node with duplicated identifier.</param>
         protected void identifierError(DTreeNode<string> node)
         {
             Console.WriteLine("Error - duplicate identifier: " + 
@@ -69,6 +92,11 @@ namespace SemanticAnalysis
             Environment.Exit(-2);
         }
 
+        /// <summary>
+        /// Checks if in math expression or assignment types match each other.
+        /// </summary>
+        /// <param name="parentNode">Current syntaxTree node to analyze.</param>
+        /// <returns>Type of used expression in all childNodes.</returns>
         protected Type checkAssignment(DTreeNode<string> parentNode)
         {
             Type type1 = getChildType(parentNode.Nodes[0]);
@@ -80,6 +108,12 @@ namespace SemanticAnalysis
             return type1;
         }
 
+        /// <summary>
+        /// Gets type of parts of math expression or assignment from a
+        /// single child node.
+        /// </summary>
+        /// <param name="parentNode">Curent syntaxTree node to process.</param>
+        /// <returns>Type of child node.</returns>
         protected Type getChildType(DTreeNode<string> parentNode)
         {
             int type = 0;
@@ -103,6 +137,13 @@ namespace SemanticAnalysis
             }
         }
 
+        /// <summary>
+        /// Gets type of identifier (variable).
+        /// </summary>
+        /// <param name="parentNode">Current syntaxTree node to process 
+        /// (holds a name of variable).</param>
+        /// <param name="s">Possible, name of variable.</param>
+        /// <returns></returns>
         protected Type getIdentifierType(DTreeNode<string> parentNode, string s)
         {
             string identType;
@@ -124,6 +165,10 @@ namespace SemanticAnalysis
             }
         }
 
+        /// <summary>
+        /// Type mismatch error has occured.
+        /// </summary>
+        /// <param name="node">SyntaxTree node, near that error has occured.</param>
         protected void typeError(DTreeNode<string> node)
         {
             Console.WriteLine("Error - type mismatch, near:");
@@ -133,6 +178,10 @@ namespace SemanticAnalysis
             Environment.Exit(-3);
         }
 
+        /// <summary>
+        /// Undefined error has occured (i haven't discovered situations,
+        /// where it can occure, but in possible).
+        /// </summary>
         protected void undefError()
         {
             Console.WriteLine("Undefined semantic error.");
