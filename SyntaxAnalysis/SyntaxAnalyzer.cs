@@ -199,8 +199,19 @@ namespace SyntaxAnalysis
                 return;
             }
 
-            // Search for identifiers
             int type = 0, value = 0;
+            if (startPos + 2 == finishPos)
+            {
+                token.token(startPos + 1, ref type, ref value);
+                DTreeNode<string> t = parentNode.Nodes.Add(lAnalyzer.tokenStringBuilder(type, value));
+                token.token(startPos, ref type, ref value);
+                t.Nodes.Add(lAnalyzer.tokenStringBuilder(type, value));
+                token.token(startPos + 2, ref type, ref value);
+                t.Nodes.Add(lAnalyzer.tokenStringBuilder(type, value));
+                return;
+            }
+
+            // Search for identifiers
             token.token(startPos, ref type, ref value);
             if (startPos == finishPos && type > 2)
             {

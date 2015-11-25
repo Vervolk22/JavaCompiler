@@ -157,5 +157,22 @@ namespace SyntaxAnalysis
             }
             return max;
         }
+
+        public void printSomeNodes(DTreeNode<string> node, ref int toPrint)
+        {
+            
+            if (node.Nodes.Count > 0)
+            {
+                printSomeNodes(node.Nodes[0], ref toPrint);
+            }
+            Console.WriteLine(LexemTypeHelper.getParsedValue(node.Value));
+            if (toPrint < 1) return;
+            toPrint--;
+            if (toPrint < 1) return;
+            if (node.Nodes.Count > 0)
+            {
+                printSomeNodes(node.Nodes[1], ref toPrint);
+            }
+        }
     }
 }

@@ -1,6 +1,7 @@
 class JavaLearning1Win {
     public static void main(String[] args) {
-        int i;
-        int i = 5;
+       int i = 5 + 3;
+       int i;
+       System.out.println(i);
     }
 }
