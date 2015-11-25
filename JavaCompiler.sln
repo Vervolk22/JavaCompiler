@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SyntaxAnalysis", "SyntaxAna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JavaToILGenerator", "JavaToILGenerator\JavaToILGenerator.csproj", "{C329515F-25CF-4676-800D-FEFF0F1AC8A5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SemanticAnalysis", "SemanticAnalysis\SemanticAnalysis.csproj", "{F6A46274-C696-4AB0-9DCF-EAE4630E3E00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C329515F-25CF-4676-800D-FEFF0F1AC8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6A46274-C696-4AB0-9DCF-EAE4630E3E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6A46274-C696-4AB0-9DCF-EAE4630E3E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6A46274-C696-4AB0-9DCF-EAE4630E3E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6A46274-C696-4AB0-9DCF-EAE4630E3E00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

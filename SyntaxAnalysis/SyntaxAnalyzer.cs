@@ -351,7 +351,8 @@ namespace SyntaxAnalysis
                     continue;
                 }
 
-                node = processor_variable(currentPos, pos1, node);
+                node = processor_variable(currentPos, pos1 - 1, node);
+                currentPos = pos1 + 1;
             }
         }
 

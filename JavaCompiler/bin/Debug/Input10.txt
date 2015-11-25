@@ -12,6 +12,7 @@ class JavaLearning1Win {
 	{
 		i = i + 1;
 		result = result + i;
+                System.out.println(result);
 	}
 	System.out.println(result);
     }

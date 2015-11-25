@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using LexicalAnalysis;
 using SyntaxAnalysis;
+using SemanticAnalysis;
 using JavaToILGenerator;
 
 namespace JavaCompiler
@@ -15,13 +16,16 @@ namespace JavaCompiler
         {
             LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
             IdentifiersTable ident;
-            TokenTable table = lexicalAnalyzer.analyze("Input8.txt", out ident);
+            TokenTable table = lexicalAnalyzer.analyze("Input5.txt", out ident);
             lexicalAnalyzer.printResults("Tokens.txt");
 
             SyntaxAnalyzer syntaxAnalyzer = new SyntaxAnalyzer(table, ident, lexicalAnalyzer);
             syntaxAnalyzer.analyze();
             SyntaxTree tree = syntaxAnalyzer.getTree();
             tree.printItselfToTheFile("Tree.txt");
+
+            SemanticAnalyzer semanticAnalyzer = new SemanticAnalyzer(tree);
+            semanticAnalyzer.analyze();
 
             Generator generator = new Generator();
             generator.generateExe(tree);
